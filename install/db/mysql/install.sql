@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `trinet_test_log` (
 	`value`      DECIMAL(18,2)          NOT NULL DEFAULT 0,
 	`started_at` TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`user_id`    INT(10)       UNSIGNED NOT NULL DEFAULT 0,
+	`settings`   INT(10)       UNSIGNED NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(`id`),
 	KEY(`user_id`)
@@ -16,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `trinet_test_log_section` (
 	PRIMARY KEY(`log_id`,`iblock_section_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `trinet_test_log_element` (
+CREATE TABLE IF NOT EXISTS `trinet_test_log_product` (
 	`log_id`     INT(10) UNSIGNED NOT NULL DEFAULT 0,
 	`product_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
 
