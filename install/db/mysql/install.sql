@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS `trinet_test_log_section` (
 );
 
 CREATE TABLE IF NOT EXISTS `trinet_test_log_element` (
-	`log_id`            INT(10) UNSIGNED NOT NULL DEFAULT 0,
-	`iblock_element_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+	`log_id`     INT(10) UNSIGNED NOT NULL DEFAULT 0,
+	`product_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(`log_id`,`iblock_element_id`)
+	PRIMARY KEY(`log_id`,`product_id`)
 );
