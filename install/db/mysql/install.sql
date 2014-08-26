@@ -9,9 +9,16 @@ CREATE TABLE IF NOT EXISTS `trinet_test_log` (
 	KEY(`user_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `trinet_test_log_category` (
-	`log_id`             INT(10) UNSIGNED NOT NULL DEFAULT 0,
-	`iblock_category_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+CREATE TABLE IF NOT EXISTS `trinet_test_log_section` (
+	`log_id`            INT(10) UNSIGNED NOT NULL DEFAULT 0,
+	`iblock_section_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(`log_id`,`iblock_category_id`)
+	PRIMARY KEY(`log_id`,`iblock_section_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `trinet_test_log_element` (
+	`log_id`            INT(10) UNSIGNED NOT NULL DEFAULT 0,
+	`iblock_element_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+
+	PRIMARY KEY(`log_id`,`iblock_element_id`)
 );
