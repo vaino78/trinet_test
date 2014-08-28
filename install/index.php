@@ -50,6 +50,7 @@ class trinet_test extends CModule
 
 	private function InstallFiles()
 	{
+		CopyDirFiles((dirname(__FILE__) . '/admin'), ($_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin'));
 	}
 
 	private function InstallEvents()
@@ -62,6 +63,7 @@ class trinet_test extends CModule
 
 	private function UninstallFiles()
 	{
+		DeleteDirFiles((dirname(__FILE__) . '/admin'), ($_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin'));
 	}
 
 	private function UninstallEvents()

@@ -7,7 +7,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid())
 {
 	$result = CTTPriceManager::saveSettings($_POST);
 
-
+	if(!$result)
+	{
+		ShowError(CTTPriceManage::getError());
+	}
 }
 
 $tabCtrl = new CAdminTabControl(
@@ -45,16 +48,10 @@ $tabControl->BeginNextTab();
 $tabControl->Buttons();?>
 
 <script language="JavaScript">
-function confirmRestoreDefaults()
-{
-	return confirm('<?echo AddSlashes(GetMessage("MAIN_HINT_RESTORE_DEFAULTS_WARNING"))?>');
-}
 </script>
 <input type="submit" name="Update" value="<?echo GetMessage("MAIN_SAVE")?>">
 <input type="hidden" name="Update" value="Y">
 <input type="reset" name="reset" value="<?echo GetMessage("MAIN_RESET")?>">
-<!-- input type="submit" name="RestoreDefaults" title="<?echo GetMessage("MAIN_HINT_RESTORE_DEFAULTS")?>" OnClick="return confirmRestoreDefaults();" value="<?echo GetMessage("MAIN_RESTORE_DEFAULTS")?>" -->
-
 <?
 $tabControl->End();
 ?>
