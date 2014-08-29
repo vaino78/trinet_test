@@ -10,8 +10,13 @@ class CTTPriceManager implements ITTModuleSettings
 
 	protected static $opts_req = array(); 
 
-	public static function manageBySection(array $parentSection, $value, $settings = 0, $userID = false)
+	public static function manageBySection($parentSection, $value, $settings = 0, $userID = false)
 	{
+		if(empty($parentSection))
+			$parentSection = array();
+		if(!is_array($parentSection))
+			$parentSection = (array)$parentSection;
+
 		$action = new CTTSectionManage($parentSection, $value, $settings, $userID);
 
 		$result = $action->execute();
