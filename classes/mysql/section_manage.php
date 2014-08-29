@@ -135,32 +135,8 @@ class CTTSectionManage extends ATTSectionManage
 			$queries = array();
 			foreach($sku as $s)
 			{
-				if($s['VERSION'] == 1)
-				{
-					$queries[] = sprintf(
-						(
-							'SELECT '
-							. ' DISTINCT IBEP.`IBLOCK_ELEMENT_ID` '
-							. ' FROM `b_iblock_element_property` IBEP '
-							. ' INNER JOIN `b_iblock_element` IBE ON(IBEP.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
-							. ' WHERE IBE.`IBLOCK_ID`=%u '
-							. ' && IBEP.`IBLOCK_PROPERTY_ID`=%u '
-							. ' && IBEP.`VALUE` IN(%s)'
-						),
-						$s['IBLOCK_ID'],
-						$s['SKU_PROPERTY_ID'],
-						implode(',', $elements)
-					);
-				}
-				elseif($s['VERSION'] == 2)
-				{
-					$queries[] = sprintf(
-						(
-							''
-						)
-					);
-				}
-				else
+
+				if($s['VERSION'] != 1 && $s['VERSION'] != 2)
 				{
 					trigger_error(
 						sprintf(
@@ -173,7 +149,31 @@ class CTTSectionManage extends ATTSectionManage
 
 					continue;
 				}
+
+				$queries[] = sprintf(
+					(
+						'SELECT '
+						. ' DISTINCT IBEP.`IBLOCK_ELEMENT_ID` '
+						. ' FROM `b_iblock_element_property%s` IBEP '
+						. ' INNER JOIN `b_iblock_element` IBE ON(IBEP.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
+						. ' WHERE IBE.`IBLOCK_ID`=%u '
+						. ' && IBEP.`IBLOCK_PROPERTY_ID`=%u '
+						. ' && IBEP.`VALUE` IN(%s)'
+					),
+					(
+						($s['VERSION'] == 2)
+						? sprintf('_m%u', $s['IBLOCK_ID'])
+						: ''
+					),
+					$s['IBLOCK_ID'],
+					$s['SKU_PROPERTY_ID'],
+					implode(',', $elements)
+				);
 			}
+
+			$q = $this->getDb()->Query(implode(' UNION ', $queries));
+			while($d = $q->Fetch())
+				$this->products[] = $d['IBLOCK_ELEMENT_ID'];
 		}
 
 		return $this->products;
