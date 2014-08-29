@@ -11,10 +11,10 @@ $aMenu = array(
 	'items_id'    => 'trinet_test_menu',
 	'items' => array(
 		array(
-			'text'     => GetMessage('TRINET_TEST_SECTION_UPGRADE_TEXT'),
-			'url'      => ('trinet_test_section_update.php?lang=' . LANG),
+			'text'     => GetMessage('TRINET_TEST_SECTION_MANAGE_TEXT'),
+			'url'      => ('trinet_test_section_manage.php?lang=' . LANG),
 			'more_url' => array(),
-			'title'    => GetMessage('TRINET_TEST_SECTION_UPGRADE_TITLE')
+			'title'    => GetMessage('TRINET_TEST_SECTION_MANAGE_TITLE')
 		)
 	)
 );
