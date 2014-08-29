@@ -2,16 +2,47 @@
 
 IncludeModuleLangFile(__FILE__);
 
+/**
+ * Данный класс является «главным» в модуле, реализует функциональность 
+ * по сохранению и чтению информации о настройках, а также фасадные методы 
+ * для доступа к более конкретной функциональности, предоставляемой модулем.
+ * Пока что такой метод только один — CTTPriceManager::manageBySection(), 
+ * однако, их вполне может быть больше.
+ */
 class CTTPriceManager implements ITTModuleSettings
 {
+	/**
+	 * Информация о последней ошибке
+	 * @see self::getError()
+	 */
 	protected static $error;
 
+	/**
+	 * Список опций, имеющих числовое значение
+	 * @see self::isOptionInt()
+	 */
 	protected static $opts_int = array(
 		'catalog_iblock_id'
 	);
 
-	protected static $opts_req = array(); 
-
+	/**
+	 * Фасадная обертка над взаимодействием с классом CTTSectionManage. Впоследствии в этом 
+	 * методе возможно разместить дополнительную логику, связанную, например, с определением
+	 * конкретного класса, осуществляющего полезную работу, в зависимости от внешних условий
+	 * 
+	 * @static
+	 * 
+	 * @param array|int $parentSection Секция или список секций, для товаров которых, нужно 
+	 *                                 осуществить пересчет цен
+	 * @param float $value Значение в процентах для изменения цены
+	 * @param int $settings Битовая маска настроек действия (@see ATTSectionManage)
+	 * @param int|false $userID Идентификатор пользователя, запустившего изменение. По умолчанию — текущий пользователь
+	 * 
+	 * @return int|false Возвращает количество цен, затронутых изменением, или ложь
+	 * 
+	 * @uses CTTSectionManage::process()
+	 * @uses self::getError() В случае ошибки, делает доступной информацию о ней
+	 */
 	public static function manageBySection($parentSection, $value, $settings = 0, $userID = false)
 	{
 		if(empty($parentSection))
@@ -33,6 +64,12 @@ class CTTPriceManager implements ITTModuleSettings
 	}
 
 
+	/**
+	 * Вспомогательный метод, возвращающий список инфоблоков-каталогов
+	 * 
+	 * @static
+	 * @return array|false Ассоциативный массив, ключи которого — идентификаторы, значения — наименования
+	 */
 	public static function getCatalogList()
 	{
 		if(!CModule::IncludeModule('catalog'))
@@ -47,6 +84,15 @@ class CTTPriceManager implements ITTModuleSettings
 	}
 
 
+	/**
+	 * Осуществляет сохранение настроек модуля, предварительно осуществляя валидацию
+	 * передаваемых данных
+	 * 
+	 * @static
+	 * 
+	 * @return bool
+	 * @uses self::validateSettings()
+	 */
 	public static function saveSettings(&$settings)
 	{
 		if(!static::validateSettings($settings))
@@ -58,6 +104,14 @@ class CTTPriceManager implements ITTModuleSettings
 	}
 
 
+	/**
+	 * Осуществляет валидацию данных настроек
+	 * 
+	 * @static
+	 * 
+	 * @return bool
+	 * @uses self::getError() При ошибке валидации, информация о ней доступна через этот метод
+	 */
 	public static function validateSettings(&$settings)
 	{
 		try
@@ -78,32 +132,62 @@ class CTTPriceManager implements ITTModuleSettings
 		return true;
 	}
 
-
+	/**
+	 * Получение информации о последней произошедшей ошибке
+	 * @return string
+	 */
 	public static function getError()
 	{
 		return static::$error;
 	}
 
 
+	/**
+	 * Возвращает значение опции по символьному идентификатору
+	 * 
+	 * @static
+	 * 
+	 * @param string $name Символьный идентификатор опции для данного модуля
+	 * 
+	 * @return string|int Значение опции
+	 * 
+	 * @uses COption::GetOptionString()
+	 * @uses COption::GetOptionInt()
+	 * @uses self::isOptionsInt()
+	 */
 	public static function getOption($name)
 	{
-		if(in_array($name, static::$opts_int))
+		if(static::isOptionsInt($name))
 			return COption::GetOptionInt(static::MODULE_ID, $name);
 		return COption::GetOptionString(static::MODULE_ID, $name);
 	}
 
+	/**
+	 * Устанавливает значение опции по символьному идентификатору
+	 * 
+	 * @static
+	 * 
+	 * @param string $name
+	 * @param string|int $value
+	 * 
+	 * @uses COption::SetOptionInt()
+	 * @uses COption::SetOptionString()
+	 * @uses self::isOptionsInt()
+	 */
 	public static function setOption($name, $value)
 	{
-		if(in_array($name, static::$opts_int))
+		if(static::isOptionsInt($name))
 			return COption::SetOptionInt(static::MODULE_ID, $name, $value);
 		return COption::SetOptionString(static::MODULE_ID, $name, $value);
 	}
-
-	public static function isOptionRequired($name)
-	{
-		return in_array($name, static::$opts_req);
-	}
 	
+	/**
+	 * Определяет, сохраняется ли опция с данным символьным идентификатором, в виде числа
+	 * 
+	 * @param string $name
+	 * @return bool
+	 * @static
+	 */
 	public static function isOptionsInt($name)
 	{
 		return in_array($name, static::$opts_int);

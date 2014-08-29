@@ -253,6 +253,10 @@ class CTTSectionManage extends ATTSectionManage
 		));
 	}
 
+	/**
+	 * @protected
+	 * return CDatabase
+	 */
 	protected function getDb()
 	{
 		if(!isset($this->db))
