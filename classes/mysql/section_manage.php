@@ -103,16 +103,78 @@ class CTTSectionManage extends ATTSectionManage
 				$iblock_id,
 				implode(',', $this->sections)
 			));
+
+			while($d = $q->Fetch())
+				$this->products[] = $d['ID'];
+
 		}
 		else
 		{
-			
-			$elements = 
+			// для инфоблока-каталога есть инфоблоки, содержащие торговые предложения
+
+			// выбираем родительские товары, привязанные к секциям, для которых запущена обработка
+			$elements = array();
+			$q = $this->getDb()->Query(sprintf(
+				(
+					'SELECT E.`ID` '
+					. ' FROM       `b_iblock_section_element` SE '
+					. ' INNER JOIN `b_iblock_element`         E  ON(SE.`IBLOCK_ELEMENT_ID`=E.`ID`) '
+					. ' WHERE E.`IBLOCK_ID`=%u && SE.`IBLOCK_SECTION_ID` IN(%s) '
+					. ' GROUP BY E.`ID`'
+				),
+				$iblock_id,
+				implode(',', $this->sections)
+			));
+
+			while($d = $q->Fetch())
+				$elements[] = $d['ID'];
+
+			if(empty($elements))
+				return $this->products;
+
+			$queries = array();
+			foreach($sku as $s)
+			{
+				if($s['VERSION'] == 1)
+				{
+					$queries[] = sprintf(
+						(
+							'SELECT '
+							. ' DISTINCT IBEP.`IBLOCK_ELEMENT_ID` '
+							. ' FROM `b_iblock_element_property` IBEP '
+							. ' INNER JOIN `b_iblock_element` IBE ON(IBEP.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
+							. ' WHERE IBE.`IBLOCK_ID`=%u '
+							. ' && IBEP.`IBLOCK_PROPERTY_ID`=%u '
+							. ' && IBEP.`VALUE` IN(%s)'
+						),
+						$s['IBLOCK_ID'],
+						$s['SKU_PROPERTY_ID'],
+						implode(',', $elements)
+					);
+				}
+				elseif($s['VERSION'] == 2)
+				{
+					$queries[] = sprintf(
+						(
+							''
+						)
+					);
+				}
+				else
+				{
+					trigger_error(
+						sprintf(
+							'Unknown version %s of iblock #%u',
+							$s['VERSION'],
+							$s['IBLOCK_ID']
+						),
+						E_USER_WARNING
+					);
+
+					continue;
+				}
+			}
 		}
-
-
-		while($d = $q->Fetch())
-			$this->products[] = $d['ID'];
 
 		return $this->products;
 	}
