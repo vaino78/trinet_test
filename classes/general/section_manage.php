@@ -28,8 +28,9 @@ abstract class ATTSectionManage
 	{
 		IncludeModuleLangFile(__FILE__);
 
-		$this->parents = $parents;
-		$this->value   = $value;
+		$this->parents  = $parents;
+		$this->value    = $value;
+		$this->settings = $settings;
 
 		if($user_id === false)
 		{

@@ -50,7 +50,7 @@ class CTTSectionManage extends ATTSectionManage
 				. ' LEFT JOIN `b_iblock_section` B ON('
 				. '      A.`IBLOCK_ID`=B.`IBLOCK_ID` '
 				. (
-					($this->settings & self::AFFECT_CHILDREN_SECTIONS)
+					($this->settings & static::AFFECT_CHILDREN_SECTIONS)
 					? (
 						'     && B.`LEFT_MARGIN` >= A.`LEFT_MARGIN` '
 						. '   && B.`RIGHT_MARGIN` <= A.`RIGHT_MARGIN`'
@@ -74,19 +74,42 @@ class CTTSectionManage extends ATTSectionManage
 
 	protected function getProducts($iblock_id)
 	{
+		$sku = array();
 		$q = $this->getDb()->Query(sprintf(
 			(
-				'SELECT E.`ID` '
-				. ' FROM       `b_iblock_section_element` SE '
-				. ' INNER JOIN `b_iblock_element`         E  ON(SE.`IBLOCK_ELEMENT_ID`=E.`ID`) '
-				. ' INNER JOIN `b_catalog_product`        P  ON(E.`ID`=P.`ID`) '
-				. ' INNER JOIN `b_catalog_price`          PP ON(P.`ID`=PP.`PRODUCT_ID`) '
-				. ' WHERE E.`IBLOCK_ID`=%u && SE.`IBLOCK_SECTION_ID` IN(%s) '
-				. ' GROUP BY E.`ID`'
+				'SELECT CIB.`IBLOCK_ID`, CIB.`SKU_PROPERTY_ID`, B.`VERSION` '
+				. ' FROM `b_catalog_iblock` CIB '
+				. ' INNER JOIN `b_iblock`   B   ON(CIB.`IBLOCK_ID`=B.`ID`) '
+				. ' WHERE CIB.`PRODUCT_IBLOCK_ID`=%u'
 			),
-			$iblock_id,
-			implode(',', $this->sections)
+			$iblock_id
 		));
+		while($d = $q->Fetch())
+			$sku[] = $d;
+
+		if(empty($sku))
+		{
+			// каталог без торговых предложений
+			$q = $this->getDb()->Query(sprintf(
+				(
+					'SELECT E.`ID` '
+					. ' FROM       `b_iblock_section_element` SE '
+					. ' INNER JOIN `b_iblock_element`         E  ON(SE.`IBLOCK_ELEMENT_ID`=E.`ID`) '
+					. ' INNER JOIN `b_catalog_product`        P  ON(E.`ID`=P.`ID`) '
+					. ' INNER JOIN `b_catalog_price`          PP ON(P.`ID`=PP.`PRODUCT_ID`) '
+					. ' WHERE E.`IBLOCK_ID`=%u && SE.`IBLOCK_SECTION_ID` IN(%s) '
+					. ' GROUP BY E.`ID`'
+				),
+				$iblock_id,
+				implode(',', $this->sections)
+			));
+		}
+		else
+		{
+			
+			$elements = 
+		}
+
 
 		while($d = $q->Fetch())
 			$this->products[] = $d['ID'];
