@@ -19,11 +19,11 @@ class CTTPriceManager implements ITTModuleSettings
 
 		$action = new CTTSectionManage($parentSection, $value, $settings, $userID);
 
-		$result = $action->execute();
+		$result = $action->process();
 
 		if($result === false)
 		{
-			self::$error = $action->getError();
+			static::$error = $action->getError();
 			return false;
 		}
 

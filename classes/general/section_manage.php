@@ -26,6 +26,8 @@ abstract class ATTSectionManage
 
 	function __construct(array $parents, $value, $settings = 0, $user_id = false)
 	{
+		IncludeModuleLangFile(__FILE__);
+
 		$this->parents = $parents;
 		$this->value   = $value;
 
@@ -47,7 +49,9 @@ abstract class ATTSectionManage
 			if(empty($this->user_id))
 				throw new Exception(GetMessage('USER_ID_IS_NOT_SET'));
 
-			$iblock_id = CTTPriceManage::getOption('catalog_iblock_id');
+			$iblock_id = CTTPriceManager::getOption('catalog_iblock_id');
+			if(empty($iblock_id))
+				throw new Exception(GetMessage('IBLOCK_IS_NOT_SET'));
 
 			$this->startTransaction();
 

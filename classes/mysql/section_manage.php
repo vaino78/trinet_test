@@ -4,7 +4,7 @@ class CTTSectionManage extends ATTSectionManage
 {
 	const TABLE_LOG = 'trinet_test_log';
 
-	const TABLE_LOG_SECTIONS = 'trinet_test_log_sections';
+	const TABLE_LOG_SECTIONS = 'trinet_test_log_section';
 
 	const TABLE_LOG_PRODUCTS = 'trinet_test_log_product';
 
@@ -49,8 +49,15 @@ class CTTSectionManage extends ATTSectionManage
 				. ' FROM `b_iblock_section` A '
 				. ' LEFT JOIN `b_iblock_section` B ON('
 				. '      A.`IBLOCK_ID`=B.`IBLOCK_ID` '
-				. '   && B.`LEFT_MARGIN` >= A.`LEFT_MARGIN` '
-				. '   && B.`RIGHT_MARGIN` <= A.`RIGHT_MARGIN`)'
+				. (
+					($this->settings & self::AFFECT_CHILDREN_SECTIONS)
+					? (
+						'     && B.`LEFT_MARGIN` >= A.`LEFT_MARGIN` '
+						. '   && B.`RIGHT_MARGIN` <= A.`RIGHT_MARGIN`'
+					)
+					: '&& A.`ID`=B.`ID`'
+				)
+				. ')'
 				. ' WHERE    A.`IBLOCK_ID`=%u '
 				. '       && A.`ID` IN(%s)'
 				. ' ORDER BY B.`LEFT_MARGIN`'
@@ -95,16 +102,17 @@ class CTTSectionManage extends ATTSectionManage
 			implode(',', $this->products)
 		));
 
-		return $this->affected = $this->getDb()->AffectedRowsCount();
+		return $this->affected = $q->AffectedRowsCount();
 	}
 
 	protected function logSections()
 	{
+		$log_id =& $this->id;
 		$this->getDb()->Query(sprintf(
-			'INSERT INTO `%s`(`log_id`, `section_id`) VALUES %s',
+			'INSERT INTO `%s`(`log_id`, `iblock_section_id`) VALUES %s',
 			self::TABLE_LOG_SECTIONS,
 			implode(', ', array_map(
-				function($section_id) use($this->id as $log_id)
+				function($section_id) use($log_id)
 				{
 					return sprintf('(%u, %u)', $log_id, $section_id);
 				},
@@ -115,11 +123,12 @@ class CTTSectionManage extends ATTSectionManage
 
 	protected function logProducts()
 	{
+		$log_id =& $this->id;
 		$this->getDb()->Query(sprintf(
 			'INSERT INTO `%s`(`log_id`, `product_id`) VALUES %s',
 			self::TABLE_LOG_PRODUCTS,
 			implode(', ', array_map(
-				function($product_id) use($this->id as $log_id)
+				function($product_id) use($log_id)
 				{
 					return sprintf('(%u, %u)', $log_id, $product_id);
 				},

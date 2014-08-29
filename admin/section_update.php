@@ -11,12 +11,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid())
 	if(!empty($_POST['affect_children']))
 		$settings |= CTTSectionManage::AFFECT_CHILDREN_SECTIONS;
 
-	$result = CTTPriceManager::manageBySection($POST['section'], $_POST['value'], $settings);
-	if(!$result)
-		ShowError(CTTPriceManager::getError());
+	$result = CTTPriceManager::manageBySection($_POST['section'], $_POST['value'], $settings);
 }
 
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_after.php");
+
+if(isset($result) && !$result)
+	ShowError(CTTPriceManager::getError());
 
 $iblock_id = CTTPriceManager::getOption('catalog_iblock_id');
 if(!$iblock_id)
