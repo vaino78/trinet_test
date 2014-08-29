@@ -1,5 +1,7 @@
 <?php
 
+IncludeModuleLangFile(__FILE__);
+
 class CTTPriceManager implements ITTModuleSettings
 {
 	protected static $error;
@@ -61,10 +63,10 @@ class CTTPriceManager implements ITTModuleSettings
 		try
 		{
 			if(empty($settings['catalog_iblock_id']))
-				throw new Exception(GetMessage('VALIDATE_CATALOG_IBLOCK_EMPTY'));
+				throw new Exception(GetMessage('TRINET_TEST_VALIDATE_CATALOG_IBLOCK_EMPTY'));
 
 			if(!CModule::IncludeModule('catalog') || !CCatalog::GetByID($settings['catalog_iblock_id']))
-				throw new Exception(GetMessage('VALIDATE_IBLOCK_IS_NOT_CATALOG'));
+				throw new Exception(GetMessage('TRINET_TEST_VALIDATE_IBLOCK_IS_NOT_CATALOG'));
 
 		}
 		catch(Exception $e)

@@ -45,34 +45,34 @@ abstract class ATTSectionManage
 		try
 		{
 			if(empty($this->parents))
-				throw new Exception(GetMessage('PARENT_SECTION_IS_NOT_SET'));
+				throw new Exception(GetMessage('TRINET_TEST_PARENT_SECTION_IS_NOT_SET'));
 
 			if(empty($this->user_id))
-				throw new Exception(GetMessage('USER_ID_IS_NOT_SET'));
+				throw new Exception(GetMessage('TRINET_TEST_USER_ID_IS_NOT_SET'));
 
 			if(empty($this->value) || !is_numeric($this->value))
-				throw new Exception(GetMessage('INCORRECT_VALUE'));
+				throw new Exception(GetMessage('TRINET_TEST_INCORRECT_VALUE'));
 
 			$iblock_id = CTTPriceManager::getOption('catalog_iblock_id');
 			if(empty($iblock_id))
-				throw new Exception(GetMessage('IBLOCK_IS_NOT_SET'));
+				throw new Exception(GetMessage('TRINET_TEST_IBLOCK_IS_NOT_SET'));
 
 			$this->startTransaction();
 
 			$this->getSections($iblock_id);
 
 			if(empty($this->sections))
-				throw new Exception(GetMessage('NO_SECTIONS_TO_AFFECT'), 1);
+				throw new Exception(GetMessage('TRINET_TEST_NO_SECTIONS_TO_AFFECT'), 1);
 
 			$this->getProducts($iblock_id);
 
 			if(empty($this->products))
-				throw new Exception(GetMessage('NO_PRODUCTS_TO_AFFECT'), 1);
+				throw new Exception(GetMessage('TRINET_TEST_NO_PRODUCTS_TO_AFFECT'), 1);
 
 			$this->startSession();
 
 			if(empty($this->id))
-				throw new Exception(GetMessage('NO_SESSION_ID'), 1);
+				throw new Exception(GetMessage('TRINET_TEST_NO_SESSION_ID'), 1);
 
 			$this->processUpdate();
 

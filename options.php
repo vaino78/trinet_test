@@ -19,9 +19,9 @@ $tabControl = new CAdminTabControl(
 	'tabControl',
 	array(
 		array(
-			'DIV' => 'tt_tab1',
-			'TAB' => GetMessage('OPTS_GENERAL_TAB_NAME'),
-			'TITLE' => GetMessage('OPTS_GENERAL_TAB_TITLE')
+			'DIV'   => 'tt_tab1',
+			'TAB'   => GetMessage('TRINET_TEST_OPTS_GENERAL_TAB_NAME'),
+			'TITLE' => GetMessage('TRINET_TEST_OPTS_GENERAL_TAB_TITLE')
 		)
 	)
 );
@@ -35,9 +35,9 @@ $tabControl->Begin();
 $tabControl->BeginNextTab();
 ?>
 	<tr>
-		<td width="50%" valign="top"><?=GetMessage('OPTS_GENERAL_CATALOG_IBLOCK_ID')?> <span style="color:red;">*</span></td>
+		<td width="50%" valign="top"><?=GetMessage('TRINET_TEST_OPTS_GENERAL_CATALOG_IBLOCK_ID')?> <span style="color:red;">*</span></td>
 		<td><select name="catalog_iblock_id">
-			<option value="0"><?=GetMessage('OPTS_GENERAL_CATALOG_IBLOCK_NOT_SELECTED')?></option>
+			<option value="0"><?=GetMessage('TRINET_TEST_OPTS_GENERAL_CATALOG_IBLOCK_NOT_SELECTED')?></option>
 			<?php
 			$catalogs = CTTPriceManager::getCatalogList();
 			$selected = CTTPriceManager::getOption('catalog_iblock_id');
