@@ -13,16 +13,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid())
 	}
 }
 
-$tabCtrl = new CAdminTabControl(
+IncludeModuleLangFile(__FILE__);
+
+$tabControl = new CAdminTabControl(
 	'tabControl',
 	array(
-		'DIV' => 'tt_tab1',
-		'TAB' => GetMessage('OPTS_GENERAL_TAB_NAME'),
-		'TITLE' => GetMessage('OPTS_GENERAL_TAB_TITLE')
+		array(
+			'DIV' => 'tt_tab1',
+			'TAB' => GetMessage('OPTS_GENERAL_TAB_NAME'),
+			'TITLE' => GetMessage('OPTS_GENERAL_TAB_TITLE')
+		)
 	)
 );
 
-$tabCtrl->Begin();
+$tabControl->Begin();
 ?>
 <form method="POST" action="<?echo $APPLICATION->GetCurPage()?>?mid=<?=htmlspecialchars($mid)?>&amp;lang=<?echo LANG?>">
 <?=bitrix_sessid_post();?>

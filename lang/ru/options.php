@@ -1,3 +1,8 @@
-﻿<?php
+<?php
+
+$MESS['OPTS_GENERAL_TAB_NAME'] = 'Общие';
+$MESS['OPTS_GENERAL_TAB_TITLE'] = '';
+$MESS['OPTS_GENERAL_CATALOG_IBLOCK_ID'] = 'Каталог';
+$MESS['OPTS_GENERAL_CATALOG_IBLOCK_NOT_SELECTED'] = 'не выбран';
 
 ?>

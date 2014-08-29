@@ -1,11 +1,12 @@
 <?php
 
-if class_exists('trinet_test')
-	return;
+#if(class_exists('trinet_test'))
+#	return;
 
 $PathInstall = str_replace('\\', '/', dirname(__FILE__));
 global $MESS;
-IncludeModuleLangFile($PathInstall . '/install.php');
+#IncludeModuleLangFile($PathInstall . '.php');
+include(dirname($PathInstall) . '/lang/' . LANGUAGE_ID . '/install.php');
 
 class trinet_test extends CModule
 {
@@ -39,7 +40,7 @@ class trinet_test extends CModule
 		RegisterModule($this->MODULE_ID);
 	}
 
-	public function DoInstall()
+	public function DoUninstall()
 	{
 		$this->UninstallFiles();
 		$this->RunSQL('unstall');
@@ -48,12 +49,12 @@ class trinet_test extends CModule
 		UnRegisterModule($this->MODULE_ID);
 	}
 
-	private function InstallFiles()
+	public function InstallFiles()
 	{
 		CopyDirFiles((dirname(__FILE__) . '/admin'), ($_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin'));
 	}
 
-	private function InstallEvents()
+	public function InstallEvents()
 	{
 	}
 
@@ -61,12 +62,12 @@ class trinet_test extends CModule
 	{
 	}
 
-	private function UninstallFiles()
+	public function UninstallFiles()
 	{
 		DeleteDirFiles((dirname(__FILE__) . '/admin'), ($_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin'));
 	}
 
-	private function UninstallEvents()
+	public function UninstallEvents()
 	{
 	}
 
