@@ -49,6 +49,9 @@ abstract class ATTSectionManage
 			if(empty($this->user_id))
 				throw new Exception(GetMessage('USER_ID_IS_NOT_SET'));
 
+			if(empty($this->value) || !is_numeric($this->value))
+				throw new Exception(GetMessage('INCORRECT_VALUE'));
+
 			$iblock_id = CTTPriceManager::getOption('catalog_iblock_id');
 			if(empty($iblock_id))
 				throw new Exception(GetMessage('IBLOCK_IS_NOT_SET'));

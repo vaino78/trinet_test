@@ -6,3 +6,4 @@ $MESS['NO_SECTIONS_TO_AFFECT'] = 'Не найдены секции для обр
 $MESS['NO_PRODUCTS_TO_AFFECT'] = 'Не найдены товары для обработки';
 $MESS['NO_SESSION_ID'] = 'Ошибка открытия сеанса';
 $MESS['IBLOCK_IS_NOT_SET'] = 'Не задан инфоблок каталога товаров';
+$MESS['INCORRECT_VALUE']   = 'Передано некорректное значение';

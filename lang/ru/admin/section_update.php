@@ -6,3 +6,4 @@ $MESS['TRINET_TEST_SECTION_UPDATE_TITLE']           = 'Изменение цен
 $MESS['TRINET_TEST_SECTION_UPDATE_SECTION']         = 'Секции для обновления цен';
 $MESS['TRINET_TEST_SECTION_UPDATE_AFFECT_CHILDREN'] = 'Учитывать дочерние секции';
 $MESS['TRINET_TEST_SECTION_UPDATE_VALUE']           = 'Значение (в процентах)';
+$MESS['TRINET_TEST_SECTION_UPDATE_OK']              = 'Обновление цен успешно осуществлено';
