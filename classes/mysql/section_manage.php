@@ -132,12 +132,59 @@ class CTTSectionManage extends ATTSectionManage
 			if(empty($elements))
 				return $this->products;
 
+			// поскольку теоретически к инфоблоку могут быть привязаны несколько
+			// инфоблоков с товарными предложениями, формируем список запросов
+			// на получение списка конечных товаров (текст запроса зависит 
+			// от «версии» инфоблока)
+
 			$queries = array();
 			foreach($sku as $s)
 			{
-
-				if($s['VERSION'] != 1 && $s['VERSION'] != 2)
+				if($s['VERSION'] == 1 && $s['VERSION'] != 2)
 				{
+					// если свойства хранятся в общей таблице
+
+					$queries[] = sprintf(
+						(
+							'SELECT IBEP.`IBLOCK_ELEMENT_ID` '
+							. ' FROM `b_iblock_element_property` IBEP '
+							. '   INNER JOIN `b_iblock_element`  IBE  ON(IBEP.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
+							. '   INNER JOIN `b_catalog_product` CP   ON(IBEP.`IBLOCK_ELEMENT_ID`=CP.`ID`) '
+							. '   INNER JOIN `b_catalog_price`   CPP  ON(CP.`ID`=CPP.`PRODUCT_ID`) '
+							. ' WHERE IBE.`IBLOCK_ID`=%u '
+							. '   && IBEP.`IBLOCK_PROPERTY_ID`=%u '
+							. '   && IBEP.`VALUE` IN(%s)'
+							. ' GROUP BY IBEP.`IBLOCK_ELEMENT_ID`'
+						),
+						$s['IBLOCK_ID'],
+						$s['SKU_PROPERTY_ID'],
+						implode(',', $elements)
+					);
+				}
+				elseif($s['VERSION'] == 2)
+				{
+					// если свойства хранятся в отдельной таблице
+
+					$queries[] = sprintf(
+						(
+							'SELECT IBEPS.`IBLOCK_ELEMENT_ID` '
+							. ' FROM `b_iblock_element_prop_s%u` IBEPS '
+							. '   INNER JOIN `b_iblock_element`  IBE   ON(IBEPS.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
+							. '   INNER JOIN `b_catalog_product` CP    ON(IBEPS.`IBLOCK_ELEMENT_ID`=CP.`ID`) '
+							. '   INNER JOIN `b_catalog_price`   CPP   ON(CP.`ID`=CPP.`PRODUCT_ID`) '
+							. ' WHERE IBE.`IBLOCK_ID`=%1$u '
+							. '   && IBEPS.`PROPERTY_%u` IN(%s)'
+							. ' GROUP BY IBEPS.`IBLOCK_ELEMENT_ID`'
+						),
+						$s['IBLOCK_ID'],
+						$s['SKU_PROPERTY_ID'],
+						implode(',', $elements)
+					);
+				}
+				else
+				{
+					// неизвестная версия инфоблока
+
 					trigger_error(
 						sprintf(
 							'Unknown version %s of iblock #%u',
@@ -150,30 +197,14 @@ class CTTSectionManage extends ATTSectionManage
 					continue;
 				}
 
-				$queries[] = sprintf(
-					(
-						'SELECT '
-						. ' DISTINCT IBEP.`IBLOCK_ELEMENT_ID` '
-						. ' FROM `b_iblock_element_property%s` IBEP '
-						. ' INNER JOIN `b_iblock_element` IBE ON(IBEP.`IBLOCK_ELEMENT_ID`=IBE.`ID`) '
-						. ' WHERE IBE.`IBLOCK_ID`=%u '
-						. ' && IBEP.`IBLOCK_PROPERTY_ID`=%u '
-						. ' && IBEP.`VALUE` IN(%s)'
-					),
-					(
-						($s['VERSION'] == 2)
-						? sprintf('_m%u', $s['IBLOCK_ID'])
-						: ''
-					),
-					$s['IBLOCK_ID'],
-					$s['SKU_PROPERTY_ID'],
-					implode(',', $elements)
-				);
 			}
 
-			$q = $this->getDb()->Query(implode(' UNION ', $queries));
-			while($d = $q->Fetch())
-				$this->products[] = $d['IBLOCK_ELEMENT_ID'];
+			if(!empty($queries))
+			{
+				$q = $this->getDb()->Query(implode(' UNION ', $queries));
+				while($d = $q->Fetch())
+					$this->products[] = $d['IBLOCK_ELEMENT_ID'];
+			}
 		}
 
 		return $this->products;
